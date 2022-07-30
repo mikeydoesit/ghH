@@ -7,6 +7,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import NavLink from '../NavLink'
 import MobileMenu from '../MobileMenu'
+import Navigation from "../data/Navigation"
 
 import { useState, useRef, useEffect } from 'react'
 import { useToggle, useClickAway, useLockBodyScroll } from 'react-use'
@@ -24,7 +25,8 @@ const Layout = ({ children }) => {
     useLockBodyScroll(locked)
   
     const ref = useRef(null)
-  
+    
+    const [selectedNavList, setSelectedNavList] = useState('')
     const [headerHeight, setHeaderHeight] = useState(null);
     const mobileMenu = useRef();
     const mainSection = useRef();
@@ -33,26 +35,7 @@ const Layout = ({ children }) => {
       useEffect(() => {
           var currentURL = window.location.href;
             
-          if (router.route == '/' && window.screen.width < 640) {
-              if (scrollY > 2) {
-                  document.querySelector('#header_wrapper').classList.add('have-scrolled-first');
-                  document.querySelector('#header_wrapper').classList.add('have-scrolled');
-              } else {
-                  document.querySelector('#header_wrapper').classList.remove('have-scrolled');
-                  document.querySelector('#header_wrapper').classList.remove('have-scrolled-first');
-              }
-          }else if(router.route == '/' && window.screen.width >= 640){
-              if (scrollY > 50 && scrollY < 350) {
-                  document.querySelector('#header_wrapper').classList.add('have-scrolled-first');
-                  document.querySelector('#header_wrapper').classList.remove('have-scrolled');
-              } else if (scrollY > 350) {
-                  document.querySelector('#header_wrapper').classList.add('have-scrolled');
-                  document.querySelector('#header_wrapper').classList.remove('have-scrolled-first');
-              } else {
-                  document.querySelector('#header_wrapper').classList.remove('have-scrolled');
-                  document.querySelector('#header_wrapper').classList.remove('have-scrolled-first');
-              }
-          }
+          
   
           const headerElmnt = document.querySelector('#header_wrapper');
           const headerHeight = headerElmnt.clientHeight
@@ -60,7 +43,7 @@ const Layout = ({ children }) => {
   
           const onPageLoad = () => {
               mobileMenu.current.style.transform = 'translateY(' + headerHeight + 'px) translateX(calc(100% + 2rem))';
-              mainSection.current.style.transform = 'translateY(' + headerHeight + 'px)';
+              mainSection.current.style.marginTop = headerHeight + 'px';
             };
         
             if (document.readyState === "complete") {
@@ -69,10 +52,7 @@ const Layout = ({ children }) => {
               window.addEventListener("load", onPageLoad);
               return () => window.removeEventListener("load", onPageLoad);
             }
-  
-            
       })
-    const bgClass = router.pathname == '/' ? 'bg-transparent' : 'have-scrolled';
   
     const { user } = useAuth({ middleware: 'guest' })
   
@@ -85,7 +65,7 @@ const Layout = ({ children }) => {
   };
   
     return (
-      <div className="relative overflow-hidden">
+      <div className="relative">
   
           <DefaultSeo
               openGraph={{
@@ -99,30 +79,18 @@ const Layout = ({ children }) => {
               canonical={url}
           />
           <MobileMenu refProp={mobileMenu} />
-          <header id="header_wrapper" className={ 'fixed w-full px-0 sm:px-8 top-0 left-0 z-[14] text-white ' + bgClass }>
-              <div className={ 'hl py-3.5 sm:py-3 container mx-auto flex items-center justify-between rounded-none sm:rounded-lg mt-0 sm:my-5 h-20 duration-100 sm:duration-300 h-auto ' + bgClass }>
+          <header id="header_wrapper" className='fixed w-full px-0 sm:px-8 top-0 left-0 z-[14] text-white bg-white'>
+              <div className='hl container mx-auto flex items-center justify-between rounded-none sm:rounded-lg mt-0 sm:mt-5 h-20 duration-100 sm:duration-300 h-auto px-16'>
               <Link href="/">
-                  <motion.a whileTap={{ scale: 0.9 }} className="hidden sm:block aspect-[227/63] relative h-10 cursor-pointer">
-                      <Image src="/assets/images/logo@2x.png" layout="fill" alt="logo" />
-                  </motion.a>
-              </Link>
-              <Link href="/">
-                  <motion.a className="sm:hidden aspect-[227/63] relative h-10 cursor-pointer">
-                      <Image src="/assets/images/logo@2x.png" layout="fill" alt="logo" />
-                  </motion.a>
+                  <motion.div whileTap={{ scale: 0.9 }} className="w-auto h-full cursor-pointer">
+                      <img src="/images/logo.png" alt="logo" className="object-contain object-center h-full w-auto"/>
+                  </motion.div>
               </Link>
   
   
-              <>
-              <nav id="main-nav" className="sm:mt-1 sm:mr-2 duration-300 sm:flex flex-col sm:flex-row absolute right-0 bottom-0 bg-white sm:bg-transparent hidden sm:relative">
-                  <NavLink href="/cars">Our Cars</NavLink>
-                  <NavLink href="/faq">FAQ</NavLink>
-                  <NavLink href="/locations">Locations</NavLink>
-                  <NavLink href="/blog">Blog</NavLink>
-                  <NavLink href="/about">About</NavLink>
-              </nav>
+              
 
-              <div className="px-6 py-4">
+              <div className="">
                     {user ?
                         <Link href="/dashboard">
                             <a className="ml-4 text-sm text-gray-700 underline">
@@ -130,29 +98,89 @@ const Layout = ({ children }) => {
                             </a>
                         </Link>
                         :
-                        <>
-                            <Link href="/login">
-                                <a className="text-sm text-gray-700 underline">Login</a>
-                            </Link>
-
+                        <div className="flex flex-row items-center">
                             <Link href="/register">
-                                <a className="ml-4 text-sm text-gray-700 underline">
+                                <a className="text-base text-black underline font-semibold">
                                     Register
                                 </a>
                             </Link>
-                        </>
+
+                            <Link href="/login">
+                                <div className="bg-primary rounded-full py-2 px-8 flex flex-row items-center ml-12 cursor-pointer">
+                                    <span className="text-base text-white font-bold">Login</span>
+                                    <i className="fa-solid fa-chevron-right fa-xs ml-1"></i>
+                                </div>
+                            </Link>
+                        </div>
                     }
                 </div>
   
-              <div onClick={handleMenuClick} className='mobileMenuToggle flex flex-row sm:hidden justify-center items-center pointer-events-auto'>
-                  <span className='text-white uppercase mr-2 font-extrabold sm:font-normal text-sm drop-shadow-md'>MENU</span>
-                  <div className='mobileMenuToggleBtn w-8 h-8 px-2 py-2 bg-primary flex flex-col justify-center items-center rounded-xl'>
-                      <span className='w-full h-[2px] bg-white block'></span>
-                      <span className='w-full h-[2px] bg-white block my-[0.2rem]'></span>
-                      <span className='w-full h-[2px] bg-white block'></span>
-                  </div>
+                <div onClick={handleMenuClick} className='mobileMenuToggle flex flex-row sm:hidden justify-center items-center pointer-events-auto'>
+                    <span className='text-white uppercase mr-2 font-extrabold sm:font-normal text-sm drop-shadow-md'>MENU</span>
+                    <div className='mobileMenuToggleBtn w-8 h-8 px-2 py-2 bg-primary flex flex-col justify-center items-center rounded-xl'>
+                        <span className='w-full h-[2px] bg-white block'></span>
+                        <span className='w-full h-[2px] bg-white block my-[0.2rem]'></span>
+                        <span className='w-full h-[2px] bg-white block'></span>
+                    </div>
+                </div>
               </div>
-              </>
+              <div className="mt-1 sm:flex flex-row hidden w-full container mx-auto px-16">
+                <nav id="main-nav" className="duration-300 flex flex-row w-full justify-between">
+
+                    {Navigation.map((item, i ) => {
+                        return (
+                                <AnimatePresence initial={false} exitBeforeEnter>
+                                <div className="flex flex-col relative navlink " key={i} onMouseEnter={()=> setSelectedNavList(item.title)} onMouseLeave={()=> setSelectedNavList('')}>
+                                    <div className="navlink-item text-black pb-2.5 font-semibold cursor-pointer" >
+                                        <span className="text-lg">{item.title}</span>
+                                        <i className="fa-solid fa-chevron-down fa-xs ml-3 transition duration-150 ease-in-out"></i>
+                                    </div>
+                                    {selectedNavList == item.title && (
+                                        <motion.ul
+                                            initial={{ opacity: 0 }}
+                                            animate={{ opacity: 1 }}
+                                            exit={{ opacity: 0 }}
+                                            className="absolute top-full min-w-[13rem] bg-white px-8 -left-8 list-none rounded-md">
+                                            {item.navItems.map((link, j) => {
+                                                return (
+                                                    <li key={j}>
+                                                        <NavLink href={`/` + link}>
+                                                            <span>
+                                                                {link}
+                                                            </span>
+                                                        </NavLink>
+                                                    </li>
+                                                )
+                                            })}
+                                        </motion.ul>
+                                    )}
+                                    </div>
+                                </AnimatePresence>
+                        )
+                    })}
+
+                    
+                    {/* <NavLink href="/cars">
+                        <span>Find a home</span>
+                        <i className="fa-solid fa-chevron-down ml-3 transition duration-150 ease-in-out"></i>
+                    </NavLink>
+                    <NavLink href="/faq">
+                        <span>Manage your home</span>
+                        <i className="fa-solid fa-chevron-down ml-3 transition duration-150 ease-in-out"></i>
+                    </NavLink>
+                    <NavLink href="/locations">
+                        <span>Support & opportunities</span>
+                        <i className="fa-solid fa-chevron-down ml-3 transition duration-150 ease-in-out"></i>
+                    </NavLink>
+                    <NavLink href="/blog">
+                        <span>About us</span>
+                        <i className="fa-solid fa-chevron-down ml-3 transition duration-150 ease-in-out"></i>
+                    </NavLink>
+                    <NavLink href="/about">
+                        <span>Contact us</span>
+                        <i className="fa-solid fa-chevron-down ml-3 transition duration-150 ease-in-out"></i>
+                    </NavLink> */}
+                </nav>
               </div>
           </header>
           
@@ -166,99 +194,40 @@ const Layout = ({ children }) => {
                   </div>
               </AnimatePresence>
   
-          <footer className="flex flex-col justify-center items-center">
+          <footer className="flex flex-col justify-center items-center bg-primary text-white">
   
-              <div className="sm:container sm:mx-auto flex mt-0 sm:mt-12 sm:mt-24 flex-col sm:flex-row w-full sm:w-auto">
-                  <div className="w-full sm:w-4/12">
-  
-                      <div className="bg-black text-white sm:rounded-5xl py-9 sm:pt-10 sm:pb-8 px-4">
-                          <div className="flex flex-row sm:flex-col items-center justify-center">
-                              <div className="flex h-20 w-20">
-                                  <img src="/assets/icons/map.svg" className="h-full sm:-mt-6" alt="" />
-                                  <h1 className="hidden sm:block text-2xl font-bold ml-8">Get our <span className="text-primary">secret</span><br /> guide in your inbox</h1>
-                              </div>
-                              <form action="" className="w-full sm:mt-6 pl-8 pr-0 sm:px-8 relative flex flex-col">
-                                  <h1 className="text-[1.4rem] leading-none font-black sm:hidden mb-2">
-                                      Get our <span className="text-primary">secret</span><br />guide in your inbox
-                                  </h1>
-                                  <div className='flex flex-row border-b-white border-b-2 sm:border-0 justify-around items-center'>
-                                      <input type="text" placeholder='your@email.com' className="bg-transparent w-5/6 sm:w-full sm:border-b-2 placeholder-white focus:outline-none font-bold text-left sm:text-center sm:pr-10 py-1.5 sm:py-1 text-sm leading-7 sm:text-xl" />
-                                      <div className="hidden bg-primary hover:bg-white duration-300 text-black rounded-full w-8 h-8 sm:flex justify-center items-center">
-                                          <i className="fa-solid fa-chevron-right"></i>
-                                      </div>
-                                      <div className='sm:hidden h-5 w-5 flex justify-center items-center'>
-                                          <div className="w-full h-full rounded-full bg-primary hover:bg-white flex justify-center items-center duration-300">
-                                              <i className="fa-solid fa-chevron-right fa-xs text-black"></i>
-                                          </div>
-                                      </div>
-                                  </div>
-                              </form>
-                          </div>
-                      </div>
-  
-                  </div>
-                  <div className="w-full sm:w-8/12 px-6 sm:px-12 pt-6 sm:pt-0">
-                      <ul className="grid sm:flex grid-cols-3 justify-between">
-                          <li className="w-full sm:w-5/12">
-                              <h1 className="font-black">Site</h1>
-                              <ul className="columns-1 sm:columns-2 mt-4 font-extrabold sm:font-semibold list-none">
-                                  <li>
-                                      <Link href="/about"><a className="hover:text-primary">About Us</a></Link>
-                                  </li>
-                                  <li>
-                                      <Link href="/cars"><a className="hover:text-primary">Rent a car</a></Link>
-                                  </li>
-                                  <li>
-                                      <Link href="/cars"><a className="hover:text-primary">Our cars</a></Link>
-                                  </li>
-                                  <li>
-                                      <Link href="/faq"><a className="hover:text-primary">FAQ</a></Link>
-                                  </li>
-                                  <li>
-                                      <Link href="/contact"><a className="hover:text-primary">Contact</a></Link>
-                                  </li>
-                              </ul>
-                          </li>
-                          <li className="w-3/12">
-                              <h1 className="font-black">Explore</h1>
-                              <ul className="mt-4 font-extrabold sm:font-semibold list-none">
-                                  <li>
-                                      <Link href="/blog"><a className="hover:text-primary">Blog</a></Link>
-                                  </li>
-                                  <li>Testimonials</li>
-                                  <li>Partners</li>
-                                  <li>Campervans</li>
-                              </ul>
-                          </li>
-                          <li className="w-3/12">
-                              <h1 className="font-black">Legal</h1>
-                              <ul className="mt-4 font-extrabold sm:font-semibold list-none">
-                                  <li>Terms</li>
-                                  <li>Conditions</li>
-                                  <li>Copyright</li>
-                              </ul>
-                          </li>
-                          <li className="hidden sm:inline w-[6rem]">
-                              <h1 className="font-black">Find us at</h1>
-                              <nav className="flex justify-center items-center mt-4">
-                                  <a href="https://www.facebook.com/carsiceland/" target="_blank" className="social">
-                                      <i className="fa-brands fa-facebook-f"></i>
-                                  </a>
-                                  <a href="https://www.instagram.com/carsiceland/" target="_blank" className="social mx-2">
-                                      <i className="fa-brands fa-instagram"></i>
-                                  </a>
-                                  <a href="https://twitter.com/CarsIceland" target="_blank" className="social">
-                                      <i className="fa-brands fa-twitter"></i>
-                                  </a>
-                              </nav>
-                          </li>
-                      </ul>
-                  </div>
+              <div className="container mx-auto px-16 py-12 grid grid-cols-footer w-full">
+                    <div className="socials">
+                        <div className="social-item">
+                            <i className="fa-brands fa-facebook-f"></i>
+                        </div>
+                        <div className="social-item">
+                            <i className="fa-brands fa-instagram"></i>
+                        </div>
+                        <div className="social-item">
+                            <i className="fa-brands fa-twitter"></i>
+                        </div>
+                        <div className="social-item">
+                            <i className="fa-brands fa-youtube"></i>
+                        </div>
+                        <div className="social-item">
+                            <i className="fa-brands fa-linkedin-in"></i>
+                        </div>
+                    </div>
+                    <div className="grid grid-cols-footer-menu gap-4">
+                        <div className="footer-menu-column">
+                            <span>Working at Ghana Housing</span>
+                        </div>
+                        <div className="footer-menu-column">
+                            <span>Legal</span>
+                        </div>
+                        <div className="footer-menu-column">
+                            <span>Privacy policy</span>
+                        </div>
+                    </div>
               </div>
-  
-              <div className="container mx-auto flex justify-between text-xs text-black text-opacity-50 mt-8 mb-16">
-                  <p>© 2022 by Cars Iceland Booking Office</p>
-                  <p>Be Local Buy Local ehf. 235 Keflavík Airport (Iceland) SSN: 680513-1630 / VAT: 114127</p>
+              <div className="copyright container mx-auto px-16 mb-8">
+                    <span className="text-xs text-white font-medium">Copyright © 2022 Ghana Housing</span>
               </div>
   
           </footer>

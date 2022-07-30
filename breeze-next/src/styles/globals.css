@@ -1,3 +1,27 @@
+@import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.have-scrolled{
+    @apply bg-white text-black shadow-lg;
+}
+.navlink:hover .navlink-item > i {
+    @apply rotate-180;
+}
+.socials {
+    @apply flex flex-row 
+}
+.social-item {
+    @apply w-[40px] h-[40px] border-2 border-white mr-2 transition duration-150 ease-in-out cursor-pointer flex items-center justify-center; 
+}
+.social-item:hover {
+    @apply text-primary bg-white; 
+}
+.footer-menu-column {
+    @apply flex flex-col cursor-pointer justify-center items-center;
+}
+.footer-menu-column span{
+    @apply font-bold text-lg;
+}
