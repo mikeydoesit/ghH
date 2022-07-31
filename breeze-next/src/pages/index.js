@@ -18,13 +18,13 @@ export default function Home() {
             </Head>
             <Layout>
                 <main>
-                    <section className="h-[80vh] w-full">
+                    <section className="h-[80vh] w-full relative">
                         <Swiper 
                             modules={[Autoplay, EffectFade]}
                             className="h-full w-full"
                             slidesPerView={1}
                             autoplay={{
-                                delay: 10000,
+                                delay: 15000,
                               }}
                             effect={"fade"}
                             >
@@ -43,6 +43,21 @@ export default function Home() {
                                 )
                             })}
                         </Swiper>
+                        <div className="hero_overlay absolute top-0 bottom-0 left-0 right-0 bg-black opacity-10 z-10">
+                        </div>
+                        <div className="hero_cta container mx-auto px-16 max-w-full w-full h-full absolute top-0 left-0 z-[12] flex flex-col items-center justify-center text-white">
+                            <h1 className="font-extrabold text-[3.5rem] leading-none text-center">Let's find the home<br/>that's perfect for you</h1>
+                            <p className='text-[1.1rem] font-semibold my-4'>Search confidently through your trusted source of homes for sale or rent</p>
+                            <div className='searchbox rounded-xl flex flex-row drop-shadow-lg bg-white max-w-[1080px]'>
+                                <form className='p-1 w-full h-fit grid grid-cols-hero-searchbox'>
+                                    <input type="text" placeholder="Enter a digital address, town, neighbourhood or city" className="text-black border-0 bg-transparent outline-none focus-within:outline-none focus-within:border-0 focus:outline-none focus:border-0 ring-0 focus-within:ring-0 focus:ring-0 w-full placeholder:text-gray-500 placeholder:italic pl-6"/>
+                                    <buttom type="submit" className="rounded-xl bg-primary px-6 py-2.5 w-full font-semibold cursor-pointer">
+                                        <i className="fa-solid fa-magnifying-glass"></i>
+                                        <span className="ml-2 font-bold">Search</span>
+                                    </buttom>
+                                </form>
+                            </div>
+                        </div>
                     </section>
                 </main>
             </Layout>

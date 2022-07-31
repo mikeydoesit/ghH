@@ -13,7 +13,8 @@ module.exports = {
             },
             gridTemplateColumns: {
                 'footer': '1fr 3fr',
-                'footer-menu': '1fr 1fr 1fr'
+                'footer-menu': '1fr 1fr 1fr',
+                'hero-searchbox': '10fr 2fr'
               }
         },
     },

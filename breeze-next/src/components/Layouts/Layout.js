@@ -93,16 +93,18 @@ const Layout = ({ children }) => {
               <div className="">
                     {user ?
                         <Link href="/dashboard">
-                            <a className="ml-4 text-sm text-gray-700 underline">
-                                Dashboard
-                            </a>
+                            <div className="bg-primary rounded-full py-2 px-8 flex flex-row items-center ml-12 cursor-pointer">
+                                <span className="text-base text-white font-bold">
+                                    Dashboard
+                                </span>
+                            </div>
                         </Link>
                         :
                         <div className="flex flex-row items-center">
                             <Link href="/register">
-                                <a className="text-base text-black underline font-semibold">
+                                <span className="text-base text-black underline font-semibold cursor-pointer">
                                     Register
-                                </a>
+                                </span>
                             </Link>
 
                             <Link href="/login">
@@ -140,7 +142,7 @@ const Layout = ({ children }) => {
                                             initial={{ opacity: 0 }}
                                             animate={{ opacity: 1 }}
                                             exit={{ opacity: 0 }}
-                                            className="absolute top-full min-w-[13rem] bg-white px-8 -left-8 list-none rounded-md">
+                                            className="absolute top-full min-w-[13rem] bg-white px-8 -left-8 list-none rounded-xl">
                                             {item.navItems.map((link, j) => {
                                                 return (
                                                     <li key={j}>
@@ -216,13 +218,19 @@ const Layout = ({ children }) => {
                     </div>
                     <div className="grid grid-cols-footer-menu gap-4">
                         <div className="footer-menu-column">
-                            <span>Working at Ghana Housing</span>
+                            <Link href="/careers">
+                                <span>Working at Ghana Housing</span>
+                            </Link>
                         </div>
                         <div className="footer-menu-column">
-                            <span>Legal</span>
+                            <Link href="/legal">
+                                <span>Legal</span>
+                            </Link>
                         </div>
                         <div className="footer-menu-column">
-                            <span>Privacy policy</span>
+                            <Link href="/privacy">
+                                <span>Privacy policy</span>
+                            </Link>
                         </div>
                     </div>
               </div>
